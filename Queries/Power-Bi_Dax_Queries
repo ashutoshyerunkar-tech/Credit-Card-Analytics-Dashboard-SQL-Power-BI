@@ -1,0 +1,36 @@
+Power BI query
+
+Age grp for customers
+AgeGroup = SWITCH (
+    TRUE(),
+    'customer'[Customer_Age]< 30, "20-30",
+    'customer'[Customer_Age] >= 30 && 'customer'[Customer_Age] < 40, "30-40",
+    'customer'[Customer_Age] >= 40 && 'customer'[Customer_Age] < 50, "40-50",
+    'customer'[Customer_Age] >= 50 && 'customer'[Customer_Age] < 60, "50-60",
+    'customer'[Customer_Age] >=60, "60+",
+    "unknown"
+)
+
+Incomegroup for customers
+IncomeGroup =
+SWITCH(
+    TRUE(),
+    'customer'[Income] < 35000, "Low",
+    'customer'[Income] <= 70000, "Mid",
+    'customer'[Income] > 70000, "High"
+)
+
+
+Current_Week_Revenue = CALCULATE(
+    SUM ('cc_detail'[Revenue]),
+    FILTER(
+        ALL(cc_detail),
+        'cc_detail'[Week_no2] = MAX('cc_detail'[Week_no2])))
+
+Previous_Week_Revenue = CALCULATE(
+    SUM ('cc_detail'[Revenue]),
+    FILTER(
+        ALL(cc_detail),
+        'cc_detail'[Week_no2] = MAX('cc_detail'[Week_no2])-1))
+
+WOW_revenue = DIVIDE(([Current_Week_Revenue]-[Previous_Week_Revenue]),[Previous_Week_Revenue])
